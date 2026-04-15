@@ -54,3 +54,9 @@ export const smallEmbeddingModel = process.env
   .USE_LOCAL_MODEL
   ? lmstudio.textEmbeddingModel("")
   : openai.embedding("text-embedding-3-small");
+
+export const openrouter = createOpenAICompatible({
+	name: 'openrouter',
+	baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+})

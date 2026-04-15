@@ -15,8 +15,8 @@ dependencies:
     specifier: ^1.1.0
     version: 1.1.0(zod@3.24.1)
   '@ai-sdk/openai-compatible':
-    specifier: ^0.0.13
-    version: 0.0.13(zod@3.24.1)
+    specifier: ^0.0.14
+    version: 0.0.14(zod@3.24.1)
   '@ai-sdk/react':
     specifier: ^1.1.15
     version: 1.1.15(react@19.0.0)(zod@3.24.1)
@@ -180,14 +180,14 @@ packages:
       zod: 3.24.1
     dev: false
 
-  /@ai-sdk/openai-compatible@0.0.13(zod@3.24.1):
-    resolution: {integrity: sha512-fuauXYKac6PBuf8m52tWcWQW0UCScEkwTaOyr00TcPeK3dd8nPP+ZJzSYE5QhFg7rwi9EH3ahIFqSX1biXhdkQ==}
+  /@ai-sdk/openai-compatible@0.0.14(zod@3.24.1):
+    resolution: {integrity: sha512-WJzb7u869z3DBtUtbkUVVxwJ+WXK7taPHZ3/xMsGzMgDg9bHC2+R3h0Hj+lHhHK7AS/y56bbEOCSIuWXt3+MpA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
     dependencies:
-      '@ai-sdk/provider': 1.0.3
-      '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
+      '@ai-sdk/provider': 1.0.4
+      '@ai-sdk/provider-utils': 2.0.6(zod@3.24.1)
       zod: 3.24.1
     dev: false
 
@@ -213,8 +213,8 @@ packages:
       zod: 3.24.1
     dev: false
 
-  /@ai-sdk/provider-utils@2.0.5(zod@3.24.1):
-    resolution: {integrity: sha512-2M7vLhYN0ThGjNlzow7oO/lsL+DyMxvGMIYmVQvEYaCWhDzxH5dOp78VNjJIVwHzVLMbBDigX3rJuzAs853idw==}
+  /@ai-sdk/provider-utils@2.0.6(zod@3.24.1):
+    resolution: {integrity: sha512-nB0rPwIBSCk0UkfdkprAxQ45ZjfKlk+Ts5zvIBQkJ5SnTCL9meg6bW65aomQrxhdvtqZML2jjaWTI8/l6AIVlQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -222,8 +222,8 @@ packages:
       zod:
         optional: true
     dependencies:
-      '@ai-sdk/provider': 1.0.3
-      eventsource-parser: 3.0.0
+      '@ai-sdk/provider': 1.0.4
+      eventsource-parser: 3.0.6
       nanoid: 3.3.8
       secure-json-parse: 2.7.0
       zod: 3.24.1
@@ -288,13 +288,6 @@ packages:
       nanoid: 3.3.8
       secure-json-parse: 2.7.0
       zod: 3.24.1
-    dev: false
-
-  /@ai-sdk/provider@1.0.3:
-    resolution: {integrity: sha512-WiuJEpHTrltOIzv3x2wx4gwksAHW0h6nK3SoDzjqCOJLu/2OJ1yASESTIX+f07ChFykHElVoP80Ol/fe9dw6tQ==}
-    engines: {node: '>=18'}
-    dependencies:
-      json-schema: 0.4.0
     dev: false
 
   /@ai-sdk/provider@1.0.4:
@@ -3763,6 +3756,11 @@ packages:
 
   /eventsource-parser@3.0.0:
     resolution: {integrity: sha512-T1C0XCUimhxVQzW4zFipdx0SficT651NnkR0ZSH3yQwh+mFMdLfgjABVi4YtMTtaL4s168593DaoaRLMqryavA==}
+    engines: {node: '>=18.0.0'}
+    dev: false
+
+  /eventsource-parser@3.0.6:
+    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
     engines: {node: '>=18.0.0'}
     dev: false
 

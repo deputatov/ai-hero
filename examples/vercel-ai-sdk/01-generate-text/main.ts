@@ -1,7 +1,10 @@
-import { anthropic } from "@ai-sdk/anthropic";
+// import { anthropic } from "@ai-sdk/anthropic";
 import { generateText } from "ai";
+import { openrouter } from "../../_shared/models.ts";
 
-const model = anthropic("claude-3-5-haiku-latest");
+// const model = anthropic("claude-3-5-haiku-latest");
+
+const model = openrouter("anthropic/claude-3-5-haiku");
 
 export const answerMyQuestion = async (
   prompt: string,
