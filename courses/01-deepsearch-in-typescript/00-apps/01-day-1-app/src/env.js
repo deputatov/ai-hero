@@ -8,6 +8,7 @@ export const env = createEnv({
    */
   server: {
     OPENROUTER_API_KEY: z.string().min(1),
+    SERPER_API_KEY: z.string().min(1),
     REDIS_URL: z.string().url(),
     AUTH_SECRET:
       process.env.NODE_ENV === "production"
@@ -34,6 +35,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+    SERPER_API_KEY: process.env.SERPER_API_KEY,
     REDIS_URL: process.env.REDIS_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_DISCORD_ID: process.env.AUTH_DISCORD_ID,

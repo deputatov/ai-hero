@@ -1,6 +1,8 @@
 import { streamText, createDataStreamResponse, type Message } from "ai";
+import { z } from "zod";
 import { model } from "~/model";
 import { auth } from "~/server/auth/index.ts";
+import { searchSerper } from "~/serper";
 
 export const maxDuration = 60;
 
@@ -22,6 +24,28 @@ export async function POST(request: Request) {
       const result = streamText({
         model,
         messages,
+        system: `You are a helpful search assistant. 
+Always use the searchWeb tool to find up-to-date information before answering.
+Always cite your sources using inline links like [Title](Link) at the end of the relevant sentence or paragraph.
+Be concise and factual.`,
+        tools: {
+          searchWeb: {
+            description: "Search the web for information using Serper API.",
+            parameters: z.object({
+              query: z.string().describe("The query to search the web for"),
+            }),
+            execute: async ({ query }, { abortSignal }) => {
+              const results = await searchSerper({ q: query, num: 10 }, abortSignal);
+
+              return results.organic.map((result) => ({
+                title: result.title,
+                link: result.link,
+                snippet: result.snippet,
+              }));
+            },
+          },
+        },
+        maxSteps: 10,
       });
 
       result.mergeIntoDataStream(dataStream);
