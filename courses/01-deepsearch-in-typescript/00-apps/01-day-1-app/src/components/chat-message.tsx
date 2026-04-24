@@ -1,7 +1,11 @@
 import ReactMarkdown, { type Components } from "react-markdown";
+import type { Message } from "ai";
+import { Loader2, SearchIcon } from "lucide-react";
+
+export type MessagePart = NonNullable<Message["parts"]>[number];
 
 interface ChatMessageProps {
-  text: string;
+  parts: MessagePart[];
   role: string;
   userName: string;
 }
@@ -38,7 +42,7 @@ const Markdown = ({ children }: { children: string }) => {
   return <ReactMarkdown components={components}>{children}</ReactMarkdown>;
 };
 
-export const ChatMessage = ({ text, role, userName }: ChatMessageProps) => {
+export const ChatMessage = ({ parts, role, userName }: ChatMessageProps) => {
   const isAI = role === "assistant";
 
   return (
@@ -53,7 +57,44 @@ export const ChatMessage = ({ text, role, userName }: ChatMessageProps) => {
         </p>
 
         <div className="prose prose-invert max-w-none">
-          <Markdown>{text}</Markdown>
+          {parts.map((part, index) => {
+            if (part.type === "text") {
+              return <Markdown key={index}>{part.text}</Markdown>;
+            }
+
+            if (part.type === "tool-invocation") {
+              const { toolInvocation } = part;
+              const { toolName, toolCallId, state } = toolInvocation;
+
+              if (state === "call" || state === "partial-call") {
+                return (
+                  <div
+                    key={toolCallId}
+                    className="mb-4 flex items-center gap-2 rounded-lg bg-gray-750 p-3 text-sm text-gray-400"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Using {toolName}...</span>
+                  </div>
+                );
+              }
+
+              if (state === "result") {
+                return (
+                  <div
+                    key={toolCallId}
+                    className="mb-4 flex items-center gap-2 rounded-lg bg-gray-700 p-3 text-sm text-gray-300"
+                  >
+                    <SearchIcon className="h-4 w-4 text-blue-400" />
+                    <span>
+                      Found information using <strong>{toolName}</strong>
+                    </span>
+                  </div>
+                );
+              }
+            }
+
+            return null;
+          })}
         </div>
       </div>
     </div>
