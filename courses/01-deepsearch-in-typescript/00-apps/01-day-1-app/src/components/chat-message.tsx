@@ -2,6 +2,10 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import type { Message } from "ai";
 import { Loader2, SearchIcon } from "lucide-react";
 
+/**
+ * MessagePart is the modern way to represent different types of content in a message.
+ * Hover over the MessagePart type to see all the possible things parts can be!
+ */
 export type MessagePart = NonNullable<Message["parts"]>[number];
 
 interface ChatMessageProps {
@@ -11,7 +15,6 @@ interface ChatMessageProps {
 }
 
 const components: Components = {
-  // Override default elements with custom styling
   p: ({ children }) => <p className="mb-4 first:mt-0 last:mb-0">{children}</p>,
   ul: ({ children }) => <ul className="mb-4 list-disc pl-4">{children}</ul>,
   ol: ({ children }) => <ol className="mb-4 list-decimal pl-4">{children}</ol>,
@@ -58,42 +61,46 @@ export const ChatMessage = ({ parts, role, userName }: ChatMessageProps) => {
 
         <div className="prose prose-invert max-w-none">
           {parts.map((part, index) => {
-            if (part.type === "text") {
-              return <Markdown key={index}>{part.text}</Markdown>;
-            }
+            switch (part.type) {
+              case "text":
+                return <Markdown key={index}>{part.text}</Markdown>;
 
-            if (part.type === "tool-invocation") {
-              const { toolInvocation } = part;
-              const { toolName, toolCallId, state } = toolInvocation;
+              case "tool-invocation": {
+                const { toolInvocation } = part;
+                const { toolName, toolCallId, state } = toolInvocation;
 
-              if (state === "call" || state === "partial-call") {
-                return (
-                  <div
-                    key={toolCallId}
-                    className="mb-4 flex items-center gap-2 rounded-lg bg-gray-750 p-3 text-sm text-gray-400"
-                  >
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Using {toolName}...</span>
-                  </div>
-                );
+                if (state === "partial-call" || state === "call") {
+                  return (
+                    <div
+                      key={toolCallId}
+                      className="mb-4 flex items-center gap-2 rounded-lg bg-gray-750 p-3 text-sm text-gray-400"
+                    >
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Using {toolName}...</span>
+                    </div>
+                  );
+                }
+
+                if (state === "result") {
+                  return (
+                    <div
+                      key={toolCallId}
+                      className="mb-4 flex items-center gap-2 rounded-lg bg-gray-700 p-3 text-sm text-gray-300"
+                    >
+                      <SearchIcon className="h-4 w-4 text-blue-400" />
+                      <span>
+                        Found information using <strong>{toolName}</strong>
+                      </span>
+                    </div>
+                  );
+                }
+                return null;
               }
 
-              if (state === "result") {
-                return (
-                  <div
-                    key={toolCallId}
-                    className="mb-4 flex items-center gap-2 rounded-lg bg-gray-700 p-3 text-sm text-gray-300"
-                  >
-                    <SearchIcon className="h-4 w-4 text-blue-400" />
-                    <span>
-                      Found information using <strong>{toolName}</strong>
-                    </span>
-                  </div>
-                );
-              }
+              default:
+                // Other parts (source, file, etc.) are not required for this implementation
+                return null;
             }
-
-            return null;
           })}
         </div>
       </div>
