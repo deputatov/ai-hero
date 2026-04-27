@@ -13,8 +13,14 @@ interface ChatProps {
 
 export const ChatPage = ({ userName, isAuthenticated }: ChatProps) => {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat();
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error
+  } = useChat();
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (!isAuthenticated) {
@@ -49,6 +55,12 @@ export const ChatPage = ({ userName, isAuthenticated }: ChatProps) => {
               <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
             </div>
           )}
+
+          {error && (
+            <div className="rounded bg-red-100 p-4 text-red-700">
+              An error occurred: {error.message}
+            </div>
+          )}  
         </div>
 
         <div className="border-t border-gray-700">

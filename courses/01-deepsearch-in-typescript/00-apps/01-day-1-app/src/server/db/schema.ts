@@ -7,9 +7,7 @@ import {
   text,
   timestamp,
   varchar,
-  json,
   boolean,
-  serial,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
@@ -39,6 +37,30 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  rateLimits: many(rateLimits),
+}));
+
+export const rateLimits = createTable(
+  "rate_limit",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      withTimezone: true,
+    })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    userIdIdx: index("rate_limit_user_id_idx").on(table.userId),
+  }),
+);
+
+export const rateLimitsRelations = relations(rateLimits, ({ one }) => ({
+  user: one(users, { fields: [rateLimits.userId], references: [users.id] }),
 }));
 
 export const accounts = createTable(
@@ -126,4 +148,7 @@ export declare namespace DB {
   export type NewVerificationToken = InferInsertModel<
     typeof verificationTokens
   >;
+
+  export type RateLimit = InferSelectModel<typeof rateLimits>;
+  export type NewRateLimit = InferInsertModel<typeof rateLimits>;
 }
