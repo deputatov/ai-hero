@@ -8,6 +8,7 @@ import {
   timestamp,
   varchar,
   boolean,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
@@ -38,6 +39,58 @@ export const users = createTable("user", {
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   rateLimits: many(rateLimits),
+  chats: many(chats),
+}));
+
+export const chats = createTable(
+  "chat",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    title: varchar("title", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      withTimezone: true,
+    })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    userIdIdx: index("chat_user_id_idx").on(table.userId),
+  }),
+);
+
+export const chatsRelations = relations(chats, ({ one, many }) => ({
+  user: one(users, { fields: [chats.userId], references: [users.id] }),
+  messages: many(messages),
+}));
+
+export const messages = createTable(
+  "message",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    chatId: varchar("chat_id", { length: 255 })
+      .notNull()
+      .references(() => chats.id),
+    role: varchar("role", { length: 255 }).notNull(),
+    parts: jsonb("parts").notNull(),
+    order: integer("order").notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      withTimezone: true,
+    })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    chatIdIdx: index("message_chat_id_idx").on(table.chatId),
+  }),
+);
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  chat: one(chats, { fields: [messages.chatId], references: [chats.id] }),
 }));
 
 export const rateLimits = createTable(
@@ -151,4 +204,11 @@ export declare namespace DB {
 
   export type RateLimit = InferSelectModel<typeof rateLimits>;
   export type NewRateLimit = InferInsertModel<typeof rateLimits>;
+
+  export type Chat = InferSelectModel<typeof chats>;
+  export type NewChat = InferInsertModel<typeof chats>;
+
+  export type Message = InferSelectModel<typeof messages>;
+  export type NewMessage = InferInsertModel<typeof messages>;
 }
+
